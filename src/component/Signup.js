@@ -1,4 +1,6 @@
 import { useState, useContext } from "react";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import {
   Grid,
   TextField,
@@ -135,6 +137,8 @@ const Login = (props) => {
   const setPopup = useContext(SetPopupContext);
 
   const [loggedin, setLoggedin] = useState(isAuth());
+  const [loading, setLoading] = useState(false);
+
 
   const [signupDetails, setSignupDetails] = useState({
     type: "applicant",
@@ -235,9 +239,11 @@ const Login = (props) => {
     });
 
     if (verified) {
+      setLoading(true);
       axios
         .post(apiList.signup, updatedDetails)
         .then((response) => {
+          setLoading(false);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("type", response.data.type);
           setLoggedin(isAuth());
@@ -249,6 +255,7 @@ const Login = (props) => {
           console.log(response);
         })
         .catch((err) => {
+          setLoading(false);
           setPopup({
             open: true,
             severity: "error",
@@ -305,9 +312,11 @@ const Login = (props) => {
     console.log(updatedDetails);
 
     if (verified) {
+      setLoading(true);
       axios
         .post(apiList.signup, updatedDetails)
         .then((response) => {
+          setLoading(false);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("type", response.data.type);
           setLoggedin(isAuth());
@@ -319,6 +328,7 @@ const Login = (props) => {
           console.log(response);
         })
         .catch((err) => {
+          setLoading(false);
           setPopup({
             open: true,
             severity: "error",
@@ -501,9 +511,11 @@ const Login = (props) => {
                   : handleLoginRecruiter();
               }}
               className={classes.submitButton}
+              disabled={loading}
             >
-              Signup
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Signup"}
             </Button>
+
           </Grid>
         </Grid>
 
